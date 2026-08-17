@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Novelty Detection System — AI-Based Anomaly Detection</title>
+  <meta name="description" content="An AI-powered Novelty Detection System that uses Isolation Forest to identify unusual and previously unseen patterns in sensor data." />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+
+<!-- ── Background Grid ─────────────────────────────────────── -->
+<div class="bg-grid"></div>
+
+<!-- ── Toast Container ────────────────────────────────────── -->
+<div id="toast-container"></div>
+
+<!-- ── Navbar ─────────────────────────────────────────────── -->
+<nav class="navbar" role="navigation" aria-label="Main Navigation">
+  <div class="nav-container">
+    <a href="/" class="nav-logo" aria-label="NDS Home">
+      <div class="logo-badge">NDS</div>
+      <div class="logo-text">
+        Novelty Detection System
+        <span>AI-Powered Pattern Analysis</span>
+      </div>
+    </a>
+
+    <ul class="nav-links" id="nav-links" role="menubar">
+      <li><a href="/"          class="nav-link active" role="menuitem">🏠 Home</a></li>
+      <li><a href="/dashboard" class="nav-link"        role="menuitem">📊 Dashboard</a></li>
+      <li><a href="/history"   class="nav-link"        role="menuitem">📋 History</a></li>
+      <li><a href="#about"     class="nav-link"        role="menuitem">ℹ️ About</a></li>
+    </ul>
+
+    <a href="/dashboard" class="nav-cta" id="nav-detect-btn">Detect Novelty ⚡</a>
+
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ── Page Wrapper ────────────────────────────────────────── -->
+<div class="page-wrapper">
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- HERO SECTION                                             -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <section class="hero" id="hero" aria-label="Hero Section">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-glow-2" aria-hidden="true"></div>
+
+    <div class="hero-container">
+      <!-- Left Column -->
+      <div class="hero-content">
+        <div class="hero-badge" aria-label="System status">
+          <span class="dot" aria-hidden="true"></span>
+          AI/ML — Isolation Forest Model Active
+        </div>
+
+        <h1 class="hero-title">
+          Detect What Your<br>
+          Data Has <span class="gradient-text">Never Seen</span><br>
+          Before
+        </h1>
+
+        <p class="hero-description">
+          An AI-powered system that learns normal patterns and identifies
+          unusual or previously unseen data using Machine Learning —
+          powered by Isolation Forest.
+        </p>
+
+        <div class="hero-buttons">
+          <a href="/dashboard" class="btn btn-primary btn-lg" id="hero-start-btn">
+            ⚡ Start Detection
+          </a>
+          <a href="/dashboard" class="btn btn-outline btn-lg" id="hero-explore-btn">
+            📊 Explore Dashboard
+          </a>
+        </div>
+
+        <div class="hero-stats" aria-label="System highlights">
+          <div class="hero-stat">
+            <div class="hero-stat-value">99%</div>
+            <div class="hero-stat-label">Detection Accuracy</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">&lt;50ms</div>
+            <div class="hero-stat-label">Response Time</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">4D</div>
+            <div class="hero-stat-label">Feature Analysis</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column — Animated Canvas -->
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-canvas-wrapper">
+          <canvas id="hero-canvas" width="480" height="480"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- FEATURE CARDS                                            -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <section class="section" id="features" aria-labelledby="features-title">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label">✨ Core Features</div>
+        <h2 class="section-title" id="features-title">
+          Everything You Need to<br>
+          <span class="gradient-text">Detect Anomalies</span>
+        </h2>
+        <p class="section-subtitle">
+          Built with modern ML techniques and a clean interface for both technical and non-technical users.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Card 1 -->
+        <article class="feature-card" aria-label="AI-Powered Detection">
+          <div class="feature-icon icon-purple" aria-hidden="true">🤖</div>
+          <h3 class="feature-title">AI-Powered Detection</h3>
+          <p class="feature-desc">
+            Uses the Isolation Forest algorithm — an unsupervised Machine Learning
+            technique — to identify unusual patterns without labeled training data.
+          </p>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="feature-card" aria-label="Real-Time Analysis">
+          <div class="feature-icon icon-cyan" aria-hidden="true">⚡</div>
+          <h3 class="feature-title">Real-Time Analysis</h3>
+          <p class="feature-desc">
+            Analyze new sensor data instantly with sub-second response times.
+            Each prediction is stored in an SQLite database for future reference.
+          </p>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="feature-card" aria-label="Visual Insights">
+          <div class="feature-icon icon-green" aria-hidden="true">📊</div>
+          <h3 class="feature-title">Visual Insights</h3>
+          <p class="feature-desc">
+            Understand results through interactive Chart.js visualisations —
+            doughnut charts, time-series plots, and scatter plots for deep analysis.
+          </p>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="feature-card" aria-label="Prediction History">
+          <div class="feature-icon icon-amber" aria-hidden="true">📋</div>
+          <h3 class="feature-title">Prediction History</h3>
+          <p class="feature-desc">
+            Every prediction is automatically saved to a local SQLite database.
+            Browse, filter, and search all past results with one click.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- HOW IT WORKS                                             -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <section class="section" id="how-it-works" aria-labelledby="how-title" style="background: var(--bg-surface); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label">⚙️ Process</div>
+        <h2 class="section-title" id="how-title">
+          How It <span class="gradient-text">Works</span>
+        </h2>
+        <p class="section-subtitle">
+          From raw sensor values to a clear Normal/Novel classification in five simple steps.
+        </p>
+      </div>
+
+      <div class="steps-container" role="list">
+        <!-- Step 1 -->
+        <div class="step-item" role="listitem">
+          <div class="step-num" aria-label="Step 1">1</div>
+          <div class="step-title">📥 Input Data</div>
+          <p class="step-desc">Enter Temperature, Pressure, Vibration, and Speed values via the dashboard form.</p>
+        </div>
+
+        <div class="step-connector" aria-hidden="true">→</div>
+
+        <!-- Step 2 -->
+        <div class="step-item" role="listitem">
+          <div class="step-num" aria-label="Step 2">2</div>
+          <div class="step-title">🔧 Preprocessing</div>
+          <p class="step-desc">Flask validates and converts the input into a NumPy feature array for the model.</p>
+        </div>
+
+        <div class="step-connector" aria-hidden="true">→</div>
+
+        <!-- Step 3 -->
+        <div class="step-item" role="listitem">
+          <div class="step-num" aria-label="Step 3">3</div>
+          <div class="step-title">🧠 ML Model</div>
+          <p class="step-desc">The trained Isolation Forest model evaluates how isolated (unusual) the data point is.</p>
+        </div>
+
+        <div class="step-connector" aria-hidden="true">→</div>
+
+        <!-- Step 4 -->
+        <div class="step-item" role="listitem">
+          <div class="step-num" aria-label="Step 4">4</div>
+          <div class="step-title">📈 Novelty Score</div>
+          <p class="step-desc">An anomaly score is computed — more negative values indicate higher novelty.</p>
+        </div>
+
+        <div class="step-connector" aria-hidden="true">→</div>
+
+        <!-- Step 5 -->
+        <div class="step-item" role="listitem">
+          <div class="step-num" aria-label="Step 5">5</div>
+          <div class="step-title">✅ Result</div>
+          <p class="step-desc">The result is displayed as Normal or Novel/Unusual with a visual indicator and saved to the database.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- ABOUT / ALGORITHM                                        -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <section class="section" id="about" aria-labelledby="about-title">
+    <div class="container">
+      <div class="about-grid">
+        <!-- Left -->
+        <div class="about-text">
+          <div class="section-label">ℹ️ About</div>
+          <h2 class="section-title" id="about-title">
+            What Is <span class="gradient-text">Novelty Detection?</span>
+          </h2>
+
+          <p>
+            Novelty detection is a Machine Learning technique used to identify data points that
+            differ significantly from previously observed <strong>normal data</strong>.
+            Unlike supervised anomaly detection, novelty detection trains only on normal examples
+            and flags anything that deviates from the learned distribution.
+          </p>
+
+          <p>
+            This system uses the <strong>Isolation Forest</strong> algorithm — a tree-based,
+            unsupervised method that detects anomalies by measuring how quickly a data point
+            can be isolated in a random tree structure.
+          </p>
+
+          <div class="about-highlight">
+            💡 Example: If most machine temperature readings are between 20°C and 30°C
+            and the system suddenly receives 95°C, the model identifies it as a
+            <strong>Novel / Unusual Pattern</strong> because it requires fewer splits to isolate.
+          </div>
+
+          <p>
+            Isolation Forest uses a <code>contamination</code> parameter (set to 0.05 here)
+            to tune the decision boundary. The model is trained entirely on synthetic normal
+            sensor data and saved using <strong>Joblib</strong> for fast loading.
+          </p>
+        </div>
+
+        <!-- Right — Applications -->
+        <div>
+          <div class="section-label">🚀 Applications</div>
+          <h3 class="section-title" style="font-size: 1.6rem;">Where It's Used</h3>
+          <p class="section-subtitle" style="font-size: 14px; margin-bottom: 24px;">
+            Novelty detection powers critical systems across industries.
+          </p>
+
+          <div class="apps-grid" role="list">
+            <div class="app-card" role="listitem"><span class="app-card-icon">💳</span><div class="app-card-name">Fraud Detection</div></div>
+            <div class="app-card" role="listitem"><span class="app-card-icon">🛡️</span><div class="app-card-name">Cybersecurity</div></div>
+            <div class="app-card" role="listitem"><span class="app-card-icon">🏥</span><div class="app-card-name">Healthcare</div></div>
+            <div class="app-card" role="listitem"><span class="app-card-icon">🏭</span><div class="app-card-name">Industrial Monitoring</div></div>
+            <div class="app-card" role="listitem"><span class="app-card-icon">📡</span><div class="app-card-name">IoT Sensors</div></div>
+            <div class="app-card" role="listitem"><span class="app-card-icon">🌐</span><div class="app-card-name">Network Security</div></div>
+            <div class="app-card" role="listitem"><span class="app-card-icon">⚙️</span><div class="app-card-name">Manufacturing QA</div></div>
+            <div class="app-card" role="listitem"><span class="app-card-icon">💹</span><div class="app-card-name">Financial Transactions</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- FOOTER                                                   -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-logo">🔬 Novelty Detection System</div>
+      <p class="footer-text">AI-Based Detection of Unusual and Previously Unseen Patterns</p>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/"          class="footer-link">Home</a>
+        <a href="/dashboard" class="footer-link">Dashboard</a>
+        <a href="/history"   class="footer-link">History</a>
+        <a href="#about"     class="footer-link">About</a>
+      </nav>
+      <div class="footer-bottom">
+        Built with Python · Flask · Scikit-learn · Chart.js | B.Tech CSE/AIML Academic Project
+      </div>
+    </div>
+  </footer>
+
+</div><!-- end page-wrapper -->
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

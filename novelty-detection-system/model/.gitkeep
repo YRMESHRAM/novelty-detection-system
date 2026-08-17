@@ -1,0 +1,2 @@
+# This file keeps the model/ directory in version control.
+# After running train_model.py, novelty_model.pkl will appear here.

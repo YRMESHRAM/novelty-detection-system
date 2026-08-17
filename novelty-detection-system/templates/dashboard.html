@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Novelty Detection System</title>
+  <meta name="description" content="Analyze sensor data with AI-powered Isolation Forest to detect normal and novel patterns in real time." />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div id="toast-container"></div>
+
+<!-- ── Navbar ─────────────────────────────────────────────── -->
+<nav class="navbar" role="navigation" aria-label="Main Navigation">
+  <div class="nav-container">
+    <a href="/" class="nav-logo" aria-label="NDS Home">
+      <div class="logo-badge">NDS</div>
+      <div class="logo-text">
+        Novelty Detection System
+        <span>AI-Powered Pattern Analysis</span>
+      </div>
+    </a>
+
+    <ul class="nav-links" id="nav-links" role="menubar">
+      <li><a href="/"          class="nav-link"        role="menuitem">🏠 Home</a></li>
+      <li><a href="/dashboard" class="nav-link active"  role="menuitem">📊 Dashboard</a></li>
+      <li><a href="/history"   class="nav-link"         role="menuitem">📋 History</a></li>
+      <li><a href="/#about"    class="nav-link"         role="menuitem">ℹ️ About</a></li>
+    </ul>
+
+    <a href="/dashboard" class="nav-cta">Detect Novelty ⚡</a>
+
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ── Page Wrapper ────────────────────────────────────────── -->
+<div class="page-wrapper">
+
+  <!-- ── Page Header ──────────────────────────────────────── -->
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header-content">
+        <div>
+          <h1 class="page-title">📊 Novelty Detection <span class="gradient-text">Dashboard</span></h1>
+          <p class="page-subtitle">Analyze your sensor data and identify unusual patterns using AI.</p>
+        </div>
+        <div class="status-indicator" id="model-status" aria-live="polite">
+          <span class="status-dot" aria-hidden="true"></span>
+          Model Active
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main Content ─────────────────────────────────────── -->
+  <div class="container" style="padding-bottom: 60px;">
+
+    <!-- ── Statistics Cards ──────────────────────────────── -->
+    <div class="stats-grid" id="stats-grid" role="region" aria-label="Prediction Statistics">
+      <div class="stat-card">
+        <div class="stat-icon purple" aria-hidden="true">📊</div>
+        <div>
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-label">Total Predictions</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green" aria-hidden="true">✅</div>
+        <div>
+          <div class="stat-value" id="stat-normal" style="color: var(--normal-color);">—</div>
+          <div class="stat-label">Normal Patterns</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amber" aria-hidden="true">⚠️</div>
+        <div>
+          <div class="stat-value" id="stat-novel" style="color: var(--novel-color);">—</div>
+          <div class="stat-label">Novel Patterns</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon cyan" aria-hidden="true">📈</div>
+        <div>
+          <div class="stat-value" id="stat-rate" style="color: var(--accent);">—</div>
+          <div class="stat-label">Novelty Rate</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Main Dashboard Grid ───────────────────────────── -->
+    <div class="dashboard-grid">
+
+      <!-- ── Input Form Card ─────────────────────────────── -->
+      <div class="card" id="input-card" role="region" aria-labelledby="input-card-title">
+        <div class="card-header">
+          <span class="card-title">🎛️ <span id="input-card-title">Enter Sensor Data</span></span>
+          <span style="font-size: 12px; color: var(--text-muted);">All fields required</span>
+        </div>
+        <div class="card-body">
+          <form id="predict-form" novalidate aria-label="Sensor Data Input Form">
+            <div class="form-grid">
+
+              <!-- Temperature -->
+              <div class="form-group">
+                <label class="form-label" for="input-temperature">
+                  🌡️ Temperature
+                </label>
+                <input
+                  class="form-input"
+                  type="number"
+                  id="input-temperature"
+                  name="temperature"
+                  placeholder="e.g. 25"
+                  step="0.1"
+                  aria-describedby="temp-hint"
+                  autocomplete="off"
+                />
+                <span class="form-hint" id="temp-hint">Normal: 20–30 °C</span>
+              </div>
+
+              <!-- Pressure -->
+              <div class="form-group">
+                <label class="form-label" for="input-pressure">
+                  🔵 Pressure
+                </label>
+                <input
+                  class="form-input"
+                  type="number"
+                  id="input-pressure"
+                  name="pressure"
+                  placeholder="e.g. 100"
+                  step="0.1"
+                  aria-describedby="pres-hint"
+                  autocomplete="off"
+                />
+                <span class="form-hint" id="pres-hint">Normal: 90–110 hPa</span>
+              </div>
+
+              <!-- Vibration -->
+              <div class="form-group">
+                <label class="form-label" for="input-vibration">
+                  📳 Vibration
+                </label>
+                <input
+                  class="form-input"
+                  type="number"
+                  id="input-vibration"
+                  name="vibration"
+                  placeholder="e.g. 3"
+                  step="0.1"
+                  aria-describedby="vib-hint"
+                  autocomplete="off"
+                />
+                <span class="form-hint" id="vib-hint">Normal: 1–5 mm/s</span>
+              </div>
+
+              <!-- Speed -->
+              <div class="form-group">
+                <label class="form-label" for="input-speed">
+                  ⚡ Speed
+                </label>
+                <input
+                  class="form-input"
+                  type="number"
+                  id="input-speed"
+                  name="speed"
+                  placeholder="e.g. 55"
+                  step="0.1"
+                  aria-describedby="spd-hint"
+                  autocomplete="off"
+                />
+                <span class="form-hint" id="spd-hint">Normal: 40–70 RPM</span>
+              </div>
+
+            </div>
+
+            <!-- Sample Data Buttons -->
+            <div style="margin-bottom: 20px;">
+              <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Quick fill:</p>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button type="button" class="btn btn-outline btn-sm" id="fill-normal"   aria-label="Fill normal sample data">✅ Normal Sample</button>
+                <button type="button" class="btn btn-outline btn-sm" id="fill-unusual"  aria-label="Fill unusual sample data">⚠️ Unusual Sample</button>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-full" id="analyze-btn" aria-label="Analyze pattern">
+                <span id="analyze-btn-text">⚡ Analyze Pattern</span>
+                <span class="spinner hidden" id="analyze-spinner" aria-label="Loading..."></span>
+              </button>
+              <button type="button" class="btn btn-outline" id="clear-btn" aria-label="Clear form" style="white-space: nowrap;">🗑️ Clear</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ── Result Card ──────────────────────────────────── -->
+      <div class="card" id="result-card" role="region" aria-live="polite" aria-label="Prediction Result">
+        <div class="result-header" id="result-header">
+          <div class="result-icon" id="result-icon" aria-hidden="true">❓</div>
+          <div>
+            <div class="result-title" id="result-title">Awaiting Analysis...</div>
+            <div class="result-message" id="result-message">Submit sensor data to see results.</div>
+          </div>
+        </div>
+        <div class="result-body">
+          <div class="result-grid">
+            <div class="result-item">
+              <div class="result-item-label">Prediction</div>
+              <div class="result-item-value" id="result-prediction">—</div>
+            </div>
+            <div class="result-item">
+              <div class="result-item-label">Novelty Score</div>
+              <div class="result-item-value" id="result-score">—</div>
+            </div>
+            <div class="result-item">
+              <div class="result-item-label">Temperature</div>
+              <div class="result-item-value" id="result-temp">—</div>
+            </div>
+          </div>
+          <div class="result-grid">
+            <div class="result-item">
+              <div class="result-item-label">Pressure</div>
+              <div class="result-item-value" id="result-pressure">—</div>
+            </div>
+            <div class="result-item">
+              <div class="result-item-label">Vibration</div>
+              <div class="result-item-value" id="result-vibration">—</div>
+            </div>
+            <div class="result-item">
+              <div class="result-item-label">Speed</div>
+              <div class="result-item-value" id="result-speed">—</div>
+            </div>
+          </div>
+
+          <!-- Score Bar -->
+          <div class="score-bar-container">
+            <div class="score-bar-label">
+              <span>Anomaly Level</span>
+              <span id="score-bar-pct">—</span>
+            </div>
+            <div class="score-bar-track">
+              <div class="score-bar-fill normal" id="score-bar-fill" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Warning if Novel -->
+          <div id="novel-warning" class="hidden mt-2" style="padding: 14px; background: var(--novel-bg); border: 1px solid var(--novel-border); border-radius: var(--radius-sm); font-size: 13px; color: var(--novel-color);">
+            ⚠️ <strong>Warning:</strong> This input deviates significantly from the learned normal pattern.
+            Immediate inspection is recommended.
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end dashboard-grid -->
+
+    <!-- ── Charts Grid ───────────────────────────────────── -->
+    <div class="dashboard-grid-3" role="region" aria-label="Data Visualizations">
+
+      <!-- Chart 1: Doughnut -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🍩 Normal vs Novel</span>
+        </div>
+        <div class="card-body">
+          <div class="chart-container">
+            <canvas id="chart-doughnut" aria-label="Doughnut chart of normal vs novel predictions" role="img"></canvas>
+          </div>
+          <div id="doughnut-legend" style="display: flex; justify-content: center; gap: 20px; margin-top: 16px; font-size: 13px;"></div>
+        </div>
+      </div>
+
+      <!-- Chart 2: Line History -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📈 Score Trend</span>
+        </div>
+        <div class="card-body">
+          <div class="chart-container">
+            <canvas id="chart-line" aria-label="Line chart of prediction score over time" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart 3: Scatter -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🔵 Feature Scatter</span>
+          <span style="font-size: 11px; color: var(--text-muted);">Temp vs Pressure</span>
+        </div>
+        <div class="card-body">
+          <div class="chart-container">
+            <canvas id="chart-scatter" aria-label="Scatter plot of temperature vs pressure" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end dashboard-grid-3 -->
+
+  </div><!-- end container -->
+
+  <!-- ── Footer ───────────────────────────────────────────── -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-bottom">
+        Novelty Detection System · Flask + Scikit-learn + Chart.js · B.Tech Academic Project
+      </div>
+    </div>
+  </footer>
+
+</div><!-- end page-wrapper -->
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
